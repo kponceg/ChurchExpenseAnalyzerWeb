@@ -5,7 +5,7 @@ export default function NewTransactionPage() {
     <>
       <p className="eyebrow">Transactions</p>
       <h1>Record income</h1>
-      <p className="lede">Enter the deposit details below. The server validates the financial information before presenting a review.</p>
+      <p className="lede">Enter the deposit details below. The server validates and saves the transaction to the church ledger.</p>
       <IncomeTransactionForm />
     </>
   );

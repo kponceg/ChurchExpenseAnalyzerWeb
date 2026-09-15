@@ -7,6 +7,7 @@ const incomeTransactionSchema = z.object({
   category: z.string().trim().min(1).max(80),
   fund: z.string().trim().min(1).max(80),
   description: z.string().trim().min(1).max(160),
+  idempotencyKey: z.string().uuid(),
 });
 
 export function validateIncomeTransaction(input: unknown) {
@@ -14,8 +15,12 @@ export function validateIncomeTransaction(input: unknown) {
   if (!parsed.success) return { ok: false as const, error: "Check the amount, date, category, fund, and description." };
   return {
     ok: true as const,
+    data: parsed.data,
     transaction: {
-      ...parsed.data,
+      transactionDate: parsed.data.transactionDate,
+      category: parsed.data.category,
+      fund: parsed.data.fund,
+      description: parsed.data.description,
       amount: new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(parsed.data.amount),
     },
   };

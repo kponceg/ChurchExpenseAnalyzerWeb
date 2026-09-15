@@ -8,6 +8,7 @@ type Preview = {
   category: string;
   fund: string;
   description: string;
+  transactionId: string;
 };
 
 export function IncomeTransactionForm() {
@@ -17,12 +18,13 @@ export function IncomeTransactionForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formElement = event.currentTarget;
     setSubmitting(true);
     setError("");
     setPreview(null);
 
-    const form = new FormData(event.currentTarget);
-    const payload = Object.fromEntries(form.entries());
+    const form = new FormData(formElement);
+    const payload = { ...Object.fromEntries(form.entries()), idempotencyKey: crypto.randomUUID() };
     const response = await fetch("/api/transactions/income", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -31,7 +33,10 @@ export function IncomeTransactionForm() {
     const result = await response.json();
 
     if (!response.ok) setError(result.error ?? "The transaction could not be validated.");
-    else setPreview(result.transaction);
+    else {
+      setPreview({ ...result.transaction, transactionId: result.transactionId });
+      formElement.reset();
+    }
 
     setSubmitting(false);
   }
@@ -46,9 +51,9 @@ export function IncomeTransactionForm() {
           <div className="field"><label htmlFor="fund">Fund or purpose</label><select id="fund" name="fund" required defaultValue=""><option value="" disabled>Select a fund</option><option>Support of the work</option><option>General congregation</option><option>Children&apos;s commission</option><option>Legal and building</option><option>Presbytery</option></select></div>
           <div className="field full"><label htmlFor="description">Description</label><textarea id="description" name="description" maxLength={160} required /></div>
         </div>
-        <div className="actions"><button className="primary" disabled={submitting}>{submitting ? "Validating…" : "Review income"}</button>{error && <p className="message error" role="alert">{error}</p>}</div>
+        <div className="actions"><button className="primary" disabled={submitting}>{submitting ? "Saving…" : "Save income"}</button>{error && <p className="message error" role="alert">{error}</p>}</div>
       </form>
-      {preview && <div className="preview" aria-live="polite"><h2>Validated transaction preview</h2><dl><dt>Amount</dt><dd>{preview.amount}</dd><dt>Date</dt><dd>{preview.transactionDate}</dd><dt>Category</dt><dd>{preview.category}</dd><dt>Fund</dt><dd>{preview.fund}</dd><dt>Description</dt><dd>{preview.description}</dd></dl></div>}
+      {preview && <div className="preview" aria-live="polite"><h2>Income saved</h2><dl><dt>Reference</dt><dd>{preview.transactionId.slice(0, 8).toUpperCase()}</dd><dt>Amount</dt><dd>{preview.amount}</dd><dt>Date</dt><dd>{preview.transactionDate}</dd><dt>Category</dt><dd>{preview.category}</dd><dt>Fund</dt><dd>{preview.fund}</dd><dt>Description</dt><dd>{preview.description}</dd></dl></div>}
     </section>
   );
 }
