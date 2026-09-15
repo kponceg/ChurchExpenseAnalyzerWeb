@@ -45,6 +45,8 @@ pnpm-debug.log*
 .cache/
 .turbo/
 .eslintcache
+*.tsbuildinfo
+next-env.d.ts
 tmp/
 temp/
 *.tmp
@@ -57,4 +59,3 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
-
