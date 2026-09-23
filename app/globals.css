@@ -48,6 +48,8 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .negative { color: var(--danger); }
 .primary { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; padding: 0 18px; border: 1px solid #111; border-radius: 8px; color: #fff; background: #111; cursor: pointer; font-weight: 650; }
 .primary:disabled { cursor: wait; opacity: .55; }
+.page-actions { display: flex; align-items: center; gap: 18px; }
+.secondary-link { font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
 .panel { margin-top: 28px; padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .field { display: grid; gap: 7px; }
@@ -88,6 +90,8 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
   .content { padding-top: 32px; }
   .summary, .form-grid { grid-template-columns: 1fr; }
   .page-heading { display: grid; }
+  .page-actions { align-items: stretch; flex-direction: column; }
+  .secondary-link { padding: 10px 0; text-align: center; }
   .account-summary { display: none; }
   .field.full { grid-column: auto; }
 }
