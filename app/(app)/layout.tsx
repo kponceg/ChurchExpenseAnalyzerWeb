@@ -14,6 +14,7 @@ export default async function AppLayout({ children }: Readonly<{ children: React
         <p className="brand">Church Finance</p>
         <nav className="nav" aria-label="Primary navigation">
           <Link href="/dashboard">Dashboard</Link>
+          <Link href="/activity">Activity</Link>
           <Link href="/transactions/new">Record income</Link>
           <Link href="/reports">Reports</Link>
         </nav>
