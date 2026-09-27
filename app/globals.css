@@ -57,6 +57,7 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .field { display: grid; gap: 7px; }
 .field.full { grid-column: 1 / -1; }
 .field label { font-size: 13px; font-weight: 650; }
+.field-hint { color: var(--muted); font-size: 12px; line-height: 1.4; }
 .field input, .field select, .field textarea { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #bcbcbc; border-radius: 8px; color: var(--ink); background: #fff; }
 .field textarea { min-height: 86px; resize: vertical; }
 .actions { display: flex; align-items: center; gap: 14px; margin-top: 22px; }
@@ -77,13 +78,16 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .state-panel h2 { margin: 0 0 8px; font-size: 18px; }
 .state-panel p { margin: 0; color: var(--muted); }
 .table-wrap { margin-top: 28px; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
-.activity-table { width: 100%; min-width: 760px; border-collapse: collapse; }
+.activity-table { width: 100%; min-width: 880px; border-collapse: collapse; }
 .activity-table th, .activity-table td { padding: 15px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .activity-table th { color: var(--muted); background: var(--surface-muted); font-size: 12px; font-weight: 650; }
 .activity-table tbody tr:last-child td { border-bottom: 0; }
 .activity-table td { font-size: 13px; }
 .activity-table .reference { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
 .activity-table .amount { text-align: right; white-space: nowrap; font-weight: 700; }
+.transaction-type { display: inline-flex; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.transaction-type.income { color: var(--success); background: #eaf6ef; }
+.transaction-type.expense { color: var(--danger); background: #faecea; }
 
 @media (max-width: 720px) {
   .shell { display: block; }

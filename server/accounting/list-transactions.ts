@@ -1,12 +1,13 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 
-export type IncomeActivityItem = {
+export type TransactionActivityItem = {
   id: string;
+  transactionType: "income" | "expense";
   transactionDate: string;
   amount: number;
   description: string;
-  status: string;
+  paymentReference: string | null;
   category: string;
   fund: string;
   account: string;
@@ -17,24 +18,26 @@ function relationName(value: { name: string } | { name: string }[] | null) {
   return value?.name ?? "Unknown";
 }
 
-export async function listIncomeTransactions() {
+export async function listTransactions() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("transactions")
-    .select("id, transaction_date, amount, description, status, category:categories(name), fund:funds(name), account:accounts(name)")
-    .eq("transaction_type", "income")
+    .select("id, transaction_type, transaction_date, amount, description, payment_reference, category:categories(name), fund:funds(name), account:accounts(name)")
+    .eq("status", "posted")
+    .in("transaction_type", ["income", "expense"])
     .order("transaction_date", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(100);
 
-  if (error) return { ok: false as const, error: "Income activity could not be loaded." };
+  if (error) return { ok: false as const, error: "Transaction activity could not be loaded." };
 
-  const transactions: IncomeActivityItem[] = (data ?? []).map((row) => ({
+  const transactions: TransactionActivityItem[] = (data ?? []).map((row) => ({
     id: row.id,
+    transactionType: row.transaction_type as "income" | "expense",
     transactionDate: row.transaction_date,
     amount: Number(row.amount),
     description: row.description,
-    status: row.status,
+    paymentReference: row.payment_reference,
     category: relationName(row.category),
     fund: relationName(row.fund),
     account: relationName(row.account),
