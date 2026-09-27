@@ -88,6 +88,19 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .transaction-type { display: inline-flex; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
 .transaction-type.income { color: var(--success); background: #eaf6ef; }
 .transaction-type.expense { color: var(--danger); background: #faecea; }
+.report-table { min-width: 620px; }
+.report-table .month-name { text-transform: capitalize; font-weight: 650; }
+.report-total td { border-top: 2px solid var(--ink); background: var(--surface-muted); font-weight: 750; }
+.report-detail-link { display: block; text-decoration: underline; text-underline-offset: 3px; }
+.report-detail-eyebrow { margin-top: 28px; }
+.report-type-switch { display: inline-flex; gap: 4px; margin-top: 24px; padding: 4px; border: 1px solid var(--line); border-radius: 10px; }
+.report-type-switch a { padding: 8px 14px; border-radius: 7px; font-weight: 650; }
+.report-type-switch a.active { color: #fff; background: var(--ink); }
+.report-detail-summary { grid-template-columns: repeat(2, minmax(0, 220px)); }
+.category-report { margin-top: 32px; }
+.category-report-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; }
+.category-report-heading h2 { margin: 0; font-size: 18px; }
+.report-detail-table { min-width: 820px; }
 
 @media (max-width: 720px) {
   .shell { display: block; }

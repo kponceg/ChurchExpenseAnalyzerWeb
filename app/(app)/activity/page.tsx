@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { listTransactions } from "@/server/accounting/list-transactions";
-import { getMessages } from "@/lib/i18n";
+import { getAccountLabel, getCategoryLabel, getFundLabel, getMessages } from "@/lib/i18n";
 import { getLocale } from "@/lib/locale";
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
@@ -33,9 +33,9 @@ export default async function ActivityPage() {
                   <td>{date.format(new Date(`${transaction.transactionDate}T00:00:00`))}</td>
                   <td><span className={`transaction-type ${transaction.transactionType}`}>{transaction.transactionType === "income" ? text.activity.incomeType : text.activity.expenseType}</span></td>
                   <td><strong>{transaction.description}</strong><span className="reference">{text.activity.ref} {transaction.id.slice(0, 8).toUpperCase()}{transaction.paymentReference ? ` · ${text.activity.paymentRef}: ${transaction.paymentReference}` : ""}</span></td>
-                  <td>{transaction.category}</td>
-                  <td>{transaction.fund}</td>
-                  <td>{transaction.account}</td>
+                  <td>{getCategoryLabel(locale, transaction.category)}</td>
+                  <td>{getFundLabel(locale, transaction.fund)}</td>
+                  <td>{getAccountLabel(locale, transaction.account)}</td>
                   <td className={`amount ${transaction.transactionType === "income" ? "positive" : "negative"}`}>{transaction.transactionType === "income" ? "+" : "−"}{currency.format(transaction.amount)}</td>
                 </tr>
               ))}
