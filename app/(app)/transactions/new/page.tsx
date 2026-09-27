@@ -1,12 +1,16 @@
 import { IncomeTransactionForm } from "@/components/transactions/income-transaction-form";
+import { getMessages } from "@/lib/i18n";
+import { getLocale } from "@/lib/locale";
 
-export default function NewTransactionPage() {
+export default async function NewTransactionPage() {
+  const locale = await getLocale();
+  const text = getMessages(locale).income;
   return (
     <>
-      <p className="eyebrow">Transactions</p>
-      <h1>Record income</h1>
-      <p className="lede">Enter the deposit details below. The server validates and saves the transaction to the church ledger.</p>
-      <IncomeTransactionForm />
+      <p className="eyebrow">{text.eyebrow}</p>
+      <h1>{text.title}</h1>
+      <p className="lede">{text.lede}</p>
+      <IncomeTransactionForm locale={locale} />
     </>
   );
 }

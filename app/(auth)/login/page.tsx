@@ -1,14 +1,19 @@
 import { Suspense } from "react";
 import { LoginForm } from "@/components/forms/login-form";
+import { LanguageSwitcher } from "@/components/navigation/language-switcher";
+import { getMessages } from "@/lib/i18n";
+import { getLocale } from "@/lib/locale";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const locale = await getLocale();
+  const text = getMessages(locale);
   return (
     <main className="auth-page">
       <section className="auth-panel">
-        <p className="eyebrow">Church Finance</p>
-        <h1>Sign in</h1>
-        <p className="lede">Use your authorized church account to continue.</p>
-        <Suspense fallback={<p className="message">Loading sign-in…</p>}><LoginForm /></Suspense>
+        <div className="auth-heading"><p className="eyebrow">{text.brand}</p><LanguageSwitcher locale={locale} label={text.language} /></div>
+        <h1>{text.login.title}</h1>
+        <p className="lede">{text.login.lede}</p>
+        <Suspense fallback={<p className="message">{text.login.loading}</p>}><LoginForm labels={text.login} /></Suspense>
       </section>
     </main>
   );

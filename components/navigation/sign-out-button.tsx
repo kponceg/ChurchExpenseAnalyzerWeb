@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export function SignOutButton() {
+export function SignOutButton({ labels }: { labels: { signOut: string; signingOut: string } }) {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
 
@@ -15,5 +15,5 @@ export function SignOutButton() {
     router.refresh();
   }
 
-  return <button className="sign-out" type="button" onClick={signOut} disabled={submitting}>{submitting ? "Signing out…" : "Sign out"}</button>;
+  return <button className="sign-out" type="button" onClick={signOut} disabled={submitting}>{submitting ? labels.signingOut : labels.signOut}</button>;
 }

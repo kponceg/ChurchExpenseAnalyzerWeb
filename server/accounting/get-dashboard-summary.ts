@@ -1,5 +1,6 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import type { Locale } from "@/lib/i18n";
 
 const REPORTING_TIME_ZONE = "America/Los_Angeles";
 
@@ -20,8 +21,9 @@ function formatCents(cents: bigint) {
   return `${negative ? "-" : ""}$${dollars}.${remainder}`;
 }
 
-function currentReportingPeriod() {
-  const parts = new Intl.DateTimeFormat("en-US", {
+function currentReportingPeriod(locale: Locale) {
+  const localeName = locale === "es" ? "es-US" : "en-US";
+  const parts = new Intl.DateTimeFormat(localeName, {
     timeZone: REPORTING_TIME_ZONE,
     year: "numeric",
     month: "2-digit",
@@ -29,12 +31,12 @@ function currentReportingPeriod() {
   const year = Number(parts.find((part) => part.type === "year")?.value);
   const month = Number(parts.find((part) => part.type === "month")?.value);
   const monthKey = `${year}-${String(month).padStart(2, "0")}`;
-  const label = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric", timeZone: "UTC" })
+  const label = new Intl.DateTimeFormat(localeName, { month: "long", year: "numeric", timeZone: "UTC" })
     .format(new Date(Date.UTC(year, month - 1, 1)));
   return { monthKey, label };
 }
 
-export async function getDashboardSummary() {
+export async function getDashboardSummary(locale: Locale = "en") {
   const supabase = await createClient();
   const [accountsResult, transactionsResult] = await Promise.all([
     supabase.from("accounts").select("opening_balance"),
@@ -45,7 +47,7 @@ export async function getDashboardSummary() {
     return { ok: false as const, error: "The financial summary could not be loaded." };
   }
 
-  const period = currentReportingPeriod();
+  const period = currentReportingPeriod(locale);
   let balanceCents = (accountsResult.data ?? []).reduce((total, account) => total + decimalToCents(account.opening_balance), 0n);
   let monthlyIncomeCents = 0n;
   let monthlyExpenseCents = 0n;

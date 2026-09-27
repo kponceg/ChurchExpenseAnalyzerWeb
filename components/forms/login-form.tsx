@@ -4,7 +4,9 @@ import { FormEvent, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export function LoginForm() {
+type LoginLabels = { email: string; password: string; signIn: string; signingIn: string; error: string };
+
+export function LoginForm({ labels }: { labels: LoginLabels }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState("");
@@ -22,7 +24,7 @@ export function LoginForm() {
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
 
     if (authError) {
-      setError("The email or password is incorrect.");
+      setError(labels.error);
       setSubmitting(false);
       return;
     }
@@ -36,15 +38,15 @@ export function LoginForm() {
   return (
     <form className="auth-form" onSubmit={handleSubmit}>
       <div className="field">
-        <label htmlFor="email">Email address</label>
+        <label htmlFor="email">{labels.email}</label>
         <input id="email" name="email" type="email" autoComplete="email" required />
       </div>
       <div className="field">
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password">{labels.password}</label>
         <input id="password" name="password" type="password" autoComplete="current-password" minLength={8} required />
       </div>
       {error && <p className="message error" role="alert">{error}</p>}
-      <button className="primary" disabled={submitting}>{submitting ? "Signing in…" : "Sign in"}</button>
+      <button className="primary" disabled={submitting}>{submitting ? labels.signingIn : labels.signIn}</button>
     </form>
   );
 }
