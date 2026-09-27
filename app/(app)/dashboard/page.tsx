@@ -22,7 +22,7 @@ export default async function DashboardPage() {
         <div className="metric"><span>{text.dashboard.income}</span><strong className="positive">+{result.summary.monthlyIncome}</strong></div>
         <div className="metric"><span>{text.dashboard.expenses}</span><strong className="negative">-{result.summary.monthlyExpenses}</strong></div>
       </section>
-      <div className="page-actions"><Link className="primary" href="/transactions/new">{text.nav.income}</Link><Link className="secondary-link" href="/transactions/expense/new">{text.nav.expense}</Link><Link className="secondary-link" href="/activity">{text.dashboard.activity}</Link></div>
+      <div className="page-actions"><Link className="primary" href="/transactions/new">{text.nav.transaction}</Link><Link className="secondary-link" href="/activity">{text.dashboard.activity}</Link></div>
     </>
   );
 }

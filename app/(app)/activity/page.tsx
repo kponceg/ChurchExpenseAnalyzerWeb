@@ -16,7 +16,7 @@ export default async function ActivityPage() {
       <p className="eyebrow">{text.activity.eyebrow}</p>
       <div className="page-heading">
         <div><h1>{text.activity.title}</h1><p className="lede">{text.activity.lede}</p></div>
-        <div className="page-actions"><Link className="primary" href="/transactions/new">{text.nav.income}</Link><Link className="secondary-link" href="/transactions/expense/new">{text.nav.expense}</Link></div>
+        <Link className="primary" href="/transactions/new">{text.nav.transaction}</Link>
       </div>
 
       {!result.ok ? (

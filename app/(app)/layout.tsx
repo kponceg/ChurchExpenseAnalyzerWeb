@@ -20,8 +20,7 @@ export default async function AppLayout({ children }: Readonly<{ children: React
         <nav className="nav" aria-label={text.nav.primary}>
           <Link href="/dashboard">{text.nav.dashboard}</Link>
           <Link href="/activity">{text.nav.activity}</Link>
-          <Link href="/transactions/new">{text.nav.income}</Link>
-          <Link href="/transactions/expense/new">{text.nav.expense}</Link>
+          <Link href="/transactions/new">{text.nav.transaction}</Link>
           <Link href="/reports">{text.nav.reports}</Link>
         </nav>
         <div className="account-summary"><span>{text.account.signedIn}</span><strong>{user.email}</strong><SignOutButton labels={text.account} /><LanguageSwitcher locale={locale} label={text.language} /></div>
