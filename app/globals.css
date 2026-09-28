@@ -37,7 +37,7 @@ a { color: inherit; text-decoration: none; }
 .sign-out { margin-top: 14px; padding: 0; border: 0; color: #fff; background: transparent; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .language-switcher { display: block; margin-top: 10px; padding: 0; border: 0; color: #fff; background: transparent; cursor: pointer; font-weight: 650; text-decoration: underline; text-underline-offset: 3px; }
 .language-switcher:disabled { cursor: wait; opacity: .55; }
-.content { width: min(900px, 100%); padding: 48px clamp(22px, 5vw, 64px); }
+.content { width: min(900px, 100%); min-width: 0; padding: 48px clamp(22px, 5vw, 64px); }
 .page-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
 .eyebrow { margin: 0 0 5px; color: var(--muted); font-size: 13px; }
 h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
@@ -101,6 +101,13 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .category-report-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; }
 .category-report-heading h2 { margin: 0; font-size: 18px; }
 .report-detail-table { min-width: 820px; }
+.report-filters { display: flex; align-items: end; gap: 12px; margin: 0 0 28px; }
+.report-filters label { align-self: center; font-size: 13px; font-weight: 650; }
+.report-filters select { min-width: 120px; min-height: 44px; padding: 0 36px 0 12px; border: 1px solid #bcbcbc; border-radius: 8px; color: var(--ink); background: #fff; }
+.report-download { flex: 0 0 auto; }
+.report-detail-heading { flex-wrap: wrap; margin-top: 28px; }
+.report-detail-heading > div { min-width: 0; }
+.report-detail-heading .report-detail-eyebrow { margin-top: 0; }
 
 @media (max-width: 720px) {
   .shell { display: block; }
@@ -113,6 +120,7 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
   .page-heading { display: grid; }
   .page-actions { align-items: stretch; flex-direction: column; }
   .secondary-link { padding: 10px 0; text-align: center; }
+  .report-filters { align-items: stretch; flex-direction: column; }
   .account-summary { display: none; }
   .field.full { grid-column: auto; }
 }

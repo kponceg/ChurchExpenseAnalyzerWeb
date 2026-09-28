@@ -18,8 +18,10 @@ export default async function ReportDetailsPage({ params, searchParams }: { para
   const typeLabel = transactionType === "income" ? text.income : text.expenses;
   return <>
     <Link className="secondary-link" href="/reports">{text.back}</Link>
-    <p className="eyebrow report-detail-eyebrow">{monthLabel}</p>
-    <h1>{typeLabel} · {text.details}</h1>
+    <div className="page-heading report-detail-heading">
+      <div><p className="eyebrow report-detail-eyebrow">{monthLabel}</p><h1>{typeLabel} · {text.details}</h1></div>
+      <a className="primary report-download" href={`/api/reports/pdf?month=${month}&type=${transactionType}`} download>{text.downloadPdf}</a>
+    </div>
     <div className="report-type-switch"><Link className={transactionType === "income" ? "active" : ""} href={`/reports/${month}?type=income`}>{text.income}</Link><Link className={transactionType === "expense" ? "active" : ""} href={`/reports/${month}?type=expense`}>{text.expenses}</Link></div>
     <section className="summary report-detail-summary"><div className="metric"><span>{typeLabel}</span><strong className={transactionType === "income" ? "positive" : "negative"}>{result.details.total}</strong></div><div className="metric"><span>{text.transactions}</span><strong>{result.details.transactionCount}</strong></div></section>
     {result.details.categories.length === 0 ? <section className="state-panel"><p>{text.empty}</p></section> : result.details.categories.map((category) => <section className="category-report" key={category.category}>

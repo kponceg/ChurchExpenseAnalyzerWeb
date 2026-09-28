@@ -21,16 +21,18 @@ function currentReportingYear() {
   return Number(new Intl.DateTimeFormat("en-US", { timeZone: REPORTING_TIME_ZONE, year: "numeric" }).format(new Date()));
 }
 
-export async function getMonthlyReport(locale: Locale) {
-  const year = currentReportingYear();
+function requestedReportingYear(value?: string) {
+  const year = Number(value);
+  return Number.isInteger(year) && year >= 2000 && year <= 2100 ? year : currentReportingYear();
+}
+
+export async function getMonthlyReport(locale: Locale, requestedYear?: string) {
+  const year = requestedReportingYear(requestedYear);
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("transactions")
-    .select("transaction_type, transaction_date, amount")
-    .eq("status", "posted")
-    .in("transaction_type", ["income", "expense"])
-    .gte("transaction_date", `${year}-01-01`)
-    .lt("transaction_date", `${year + 1}-01-01`);
+  const reportQuery = supabase.from("transactions").select("transaction_type, transaction_date, amount").eq("status", "posted").in("transaction_type", ["income", "expense"]).gte("transaction_date", `${year}-01-01`).lt("transaction_date", `${year + 1}-01-01`);
+  const oldestQuery = supabase.from("transactions").select("transaction_date").eq("status", "posted").in("transaction_type", ["income", "expense"]).order("transaction_date", { ascending: true }).limit(1);
+  const newestQuery = supabase.from("transactions").select("transaction_date").eq("status", "posted").in("transaction_type", ["income", "expense"]).order("transaction_date", { ascending: false }).limit(1);
+  const [{ data, error }, { data: oldest }, { data: newest }] = await Promise.all([reportQuery, oldestQuery, newestQuery]);
 
   if (error) return { ok: false as const, error: "The monthly report could not be loaded." };
 
@@ -55,6 +57,10 @@ export async function getMonthlyReport(locale: Locale) {
 
   const totals = monthlyCents.reduce((total, month) => ({ income: total.income + month.income, expenses: total.expenses + month.expenses }), { income: 0n, expenses: 0n });
   const net = totals.income - totals.expenses;
+  const currentYear = currentReportingYear();
+  const firstYear = Math.min(year, currentYear, Number(oldest?.[0]?.transaction_date?.slice(0, 4)) || currentYear);
+  const lastYear = Math.max(year, currentYear, Number(newest?.[0]?.transaction_date?.slice(0, 4)) || currentYear);
+  const availableYears = Array.from({ length: lastYear - firstYear + 1 }, (_, index) => lastYear - index);
 
   return {
     ok: true as const,
@@ -65,6 +71,7 @@ export async function getMonthlyReport(locale: Locale) {
       totalExpenses: formatCents(totals.expenses),
       net: formatCents(net),
       netDirection: net < 0n ? "negative" as const : "positive" as const,
+      availableYears,
     },
   };
 }
