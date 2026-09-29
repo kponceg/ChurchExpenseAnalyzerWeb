@@ -10,6 +10,7 @@ export default async function ActivityPage() {
   const locale = await getLocale();
   const text = getMessages(locale);
   const date = new Intl.DateTimeFormat(locale === "es" ? "es-US" : "en-US", { month: "short", day: "numeric", year: "numeric" });
+  const dateTime = new Intl.DateTimeFormat(locale === "es" ? "es-US" : "en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
 
   return (
     <>
@@ -26,17 +27,19 @@ export default async function ActivityPage() {
       ) : (
         <div className="table-wrap">
           <table className="activity-table">
-            <thead><tr><th scope="col">{text.activity.date}</th><th scope="col">{text.activity.type}</th><th scope="col">{text.activity.description}</th><th scope="col">{text.activity.category}</th><th scope="col">{text.activity.fund}</th><th scope="col">{text.activity.account}</th><th scope="col">{text.activity.amount}</th></tr></thead>
+            <thead><tr><th scope="col">{text.activity.date}</th><th scope="col">{text.activity.type}</th><th scope="col">{text.activity.status}</th><th scope="col">{text.activity.description}</th><th scope="col">{text.activity.category}</th><th scope="col">{text.activity.fund}</th><th scope="col">{text.activity.account}</th><th scope="col">{text.activity.amount}</th><th scope="col">{text.activity.actions}</th></tr></thead>
             <tbody>
               {result.transactions.map((transaction) => (
-                <tr key={transaction.id}>
+                <tr key={transaction.id} className={transaction.status === "reversed" ? "voided-row" : undefined}>
                   <td>{date.format(new Date(`${transaction.transactionDate}T00:00:00`))}</td>
                   <td><span className={`transaction-type ${transaction.transactionType}`}>{transaction.transactionType === "income" ? text.activity.incomeType : text.activity.expenseType}</span></td>
-                  <td><strong>{transaction.description}</strong><span className="reference">{text.activity.ref} {transaction.id.slice(0, 8).toUpperCase()}{transaction.paymentReference ? ` · ${text.activity.paymentRef}: ${transaction.paymentReference}` : ""}</span></td>
+                  <td><span className={`transaction-status ${transaction.status}`}>{transaction.status === "posted" ? text.activity.posted : text.activity.voided}</span></td>
+                  <td><strong>{transaction.description}</strong><span className="reference">{text.activity.ref} {transaction.id.slice(0, 8).toUpperCase()}{transaction.paymentReference ? ` · ${text.activity.paymentRef}: ${transaction.paymentReference}` : ""}</span>{transaction.status === "reversed" && <span className="void-details">{text.activity.voidReason}: {transaction.voidReason}<br />{transaction.voidedAt ? `${text.activity.voidedOn}: ${dateTime.format(new Date(transaction.voidedAt))}` : ""}</span>}</td>
                   <td>{getCategoryLabel(locale, transaction.category)}</td>
                   <td>{getFundLabel(locale, transaction.fund)}</td>
                   <td>{getAccountLabel(locale, transaction.account)}</td>
                   <td className={`amount ${transaction.transactionType === "income" ? "positive" : "negative"}`}>{transaction.transactionType === "income" ? "+" : "−"}{currency.format(transaction.amount)}</td>
+                  <td>{transaction.status === "posted" ? <Link className="table-action" href={`/transactions/${transaction.id}/edit`}>{text.activity.edit}</Link> : "—"}</td>
                 </tr>
               ))}
             </tbody>
