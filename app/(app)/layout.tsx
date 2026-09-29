@@ -22,6 +22,7 @@ export default async function AppLayout({ children }: Readonly<{ children: React
           <Link href="/activity">{text.nav.activity}</Link>
           <Link href="/transactions/new">{text.nav.transaction}</Link>
           <Link href="/reports">{text.nav.reports}</Link>
+          <Link href="/settings">{text.nav.settings}</Link>
         </nav>
         <div className="account-summary"><span>{text.account.signedIn}</span><strong>{user.email}</strong><SignOutButton labels={text.account} /><LanguageSwitcher locale={locale} label={text.language} /></div>
       </aside>
