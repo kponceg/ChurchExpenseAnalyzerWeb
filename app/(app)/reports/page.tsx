@@ -29,6 +29,16 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
       <div className="metric"><span>{text.expenses}</span><strong className="negative">−{result.report.totalExpenses}</strong></div>
       <div className="metric"><span>{text.net}</span><strong className={result.report.netDirection}>{result.report.net}</strong></div>
     </section>
+    <section className="report-export-panel">
+      <div><h2>{text.detailedDownload}</h2><p>{text.detailedDownloadText}</p></div>
+      <form className="report-export-form" action="/api/reports/pdf" method="get">
+        <input type="hidden" name="year" value={result.report.year} />
+        <input type="hidden" name="detail" value="transactions" />
+        <div className="field"><label htmlFor="report-period">{text.period}</label><select id="report-period" name="month" defaultValue=""><option value="">{text.fullYear}</option>{result.report.months.map((month) => <option key={month.key} value={month.key}>{month.label}</option>)}</select></div>
+        <div className="field"><label htmlFor="report-type">{text.transactionType}</label><select id="report-type" name="type" defaultValue="all"><option value="all">{text.allTransactions}</option><option value="income">{text.income}</option><option value="expense">{text.expenses}</option></select></div>
+        <button className="primary" type="submit">{text.downloadDetailedPdf}</button>
+      </form>
+    </section>
     <div className="table-wrap">
       <table className="activity-table report-table">
         <thead><tr><th scope="col">{text.month}</th><th scope="col">{text.income}</th><th scope="col">{text.expenses}</th><th scope="col">{text.net}</th></tr></thead>

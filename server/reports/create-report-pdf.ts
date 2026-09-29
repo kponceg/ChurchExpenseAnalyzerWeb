@@ -29,6 +29,28 @@ type ReportDetails = {
   }>;
 };
 
+type TransactionReport = {
+  year: number;
+  monthKey: string | null;
+  reportType: "all" | "income" | "expense";
+  transactionCount: number;
+  totalIncome: string;
+  totalExpenses: string;
+  net: string;
+  months: Array<{
+    key: string;
+    income: string;
+    expenses: string;
+    net: string;
+    categories: Array<{
+      category: string;
+      income: string;
+      expenses: string;
+      transactions: Array<{ id: string; transactionType: "income" | "expense"; transactionDate: string; amount: string; description: string; paymentReference: string | null; fund: string; account: string }>;
+    }>;
+  }>;
+};
+
 const ink = rgb(0.07, 0.07, 0.07);
 const muted = rgb(0.4, 0.4, 0.4);
 const line = rgb(0.86, 0.86, 0.86);
@@ -38,6 +60,7 @@ const copy = {
   en: {
     annualTitle: "Annual financial report",
     detailTitle: "Monthly transaction details",
+    transactionReportTitle: "Detailed transaction report",
     generated: "Generated",
     income: "Income",
     expenses: "Expenses",
@@ -46,6 +69,8 @@ const copy = {
     total: "Year total",
     transactions: "Transactions",
     date: "Date",
+    type: "Type",
+    all: "All transactions",
     description: "Description / reference",
     fund: "Fund",
     account: "Account",
@@ -56,6 +81,7 @@ const copy = {
   es: {
     annualTitle: "Reporte financiero anual",
     detailTitle: "Detalles mensuales de transacciones",
+    transactionReportTitle: "Reporte detallado de transacciones",
     generated: "Generado",
     income: "Ingresos",
     expenses: "Gastos",
@@ -64,6 +90,8 @@ const copy = {
     total: "Total del año",
     transactions: "Transacciones",
     date: "Fecha",
+    type: "Tipo",
+    all: "Todas las transacciones",
     description: "Descripción / referencia",
     fund: "Fondo",
     account: "Cuenta",
@@ -217,6 +245,84 @@ export async function createDetailReportPdf(details: ReportDetails, monthLabel: 
       const amount = pdfText(`${details.transactionType === "income" ? "+" : "-"}${transaction.amount}`);
       page.drawText(amount, { x: 742 - bold.widthOfTextAtSize(amount, 8), y: y - 18, size: 8, font: bold, color: ink });
       y -= rowHeight;
+    }
+  }
+
+  drawFooter(document, regular, locale);
+  return document.save();
+}
+
+export async function createTransactionReportPdf(report: TransactionReport, periodLabel: string, locale: Locale) {
+  const document = await PDFDocument.create();
+  const regular = await document.embedFont(StandardFonts.Helvetica);
+  const bold = await document.embedFont(StandardFonts.HelveticaBold);
+  const labels = copy[locale];
+  const localeName = locale === "es" ? "es-US" : "en-US";
+  const dateFormatter = new Intl.DateTimeFormat(localeName, { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+  const monthFormatter = new Intl.DateTimeFormat(localeName, { month: "long", year: "numeric", timeZone: "UTC" });
+  let page = document.addPage([792, 612]);
+  let y = 406;
+
+  const drawTableHeader = (headerY: number) => {
+    page.drawRectangle({ x: 42, y: headerY, width: 708, height: 28, color: ink });
+    const columns = [50, 116, 174, 414, 534, 650];
+    [labels.date, labels.type, labels.description, labels.fund, labels.account, labels.amount].forEach((header, index) => page.drawText(pdfText(header), { x: columns[index], y: headerY + 10, size: 8, font: bold, color: rgb(1, 1, 1) }));
+  };
+
+  const drawPageHeader = (continuation = false) => {
+    drawDocumentHeader(page, bold, regular, `${labels.transactionReportTitle}: ${periodLabel}`, generatedLabel(locale));
+    if (!continuation) {
+      const cardWidth = 160;
+      drawSummaryCard(page, regular, bold, 42, 474, cardWidth, labels.income, report.totalIncome);
+      drawSummaryCard(page, regular, bold, 218, 474, cardWidth, labels.expenses, report.totalExpenses);
+      drawSummaryCard(page, regular, bold, 394, 474, cardWidth, labels.net, report.net);
+      drawSummaryCard(page, regular, bold, 570, 474, cardWidth, labels.transactions, report.transactionCount.toString());
+    }
+    drawTableHeader(continuation ? 494 : 416);
+    y = continuation ? 484 : 406;
+  };
+
+  const addPage = () => {
+    page = document.addPage([792, 612]);
+    drawPageHeader(true);
+  };
+
+  drawPageHeader();
+  if (report.months.length === 0) page.drawText(pdfText(labels.empty), { x: 50, y: y - 22, size: 10, font: regular, color: muted });
+
+  for (const month of report.months) {
+    if (y < 92) addPage();
+    const [year, monthNumber] = month.key.split("-").map(Number);
+    const monthLabel = monthFormatter.format(new Date(Date.UTC(year, monthNumber - 1, 1)));
+    page.drawRectangle({ x: 42, y: y - 27, width: 708, height: 27, color: rgb(0.88, 0.88, 0.88) });
+    page.drawText(pdfText(monthLabel), { x: 50, y: y - 18, size: 10, font: bold, color: ink });
+    const monthTotals = `${labels.income}: ${month.income}   ${labels.expenses}: ${month.expenses}   ${labels.net}: ${month.net}`;
+    page.drawText(pdfText(monthTotals), { x: 742 - regular.widthOfTextAtSize(pdfText(monthTotals), 8), y: y - 18, size: 8, font: regular, color: ink });
+    y -= 27;
+
+    for (const category of month.categories) {
+      if (y < 78) addPage();
+      page.drawRectangle({ x: 42, y: y - 23, width: 708, height: 23, color: panel });
+      page.drawText(pdfText(getCategoryLabel(locale, category.category)), { x: 50, y: y - 16, size: 8, font: bold, color: ink });
+      const categoryTotals = `${labels.income}: ${category.income}   ${labels.expenses}: ${category.expenses}`;
+      page.drawText(pdfText(categoryTotals), { x: 742 - regular.widthOfTextAtSize(pdfText(categoryTotals), 8), y: y - 16, size: 8, font: regular, color: ink });
+      y -= 23;
+
+      for (const transaction of category.transactions) {
+        const description = transaction.paymentReference ? `${transaction.description} / ${transaction.paymentReference}` : transaction.description;
+        const descriptionLines = wrapText(description, regular, 8, 224, 2);
+        const rowHeight = Math.max(28, descriptionLines.length * 10 + 10);
+        if (y - rowHeight < 40) addPage();
+        page.drawLine({ start: { x: 42, y: y - rowHeight }, end: { x: 750, y: y - rowHeight }, thickness: 0.7, color: line });
+        page.drawText(pdfText(dateFormatter.format(new Date(`${transaction.transactionDate}T00:00:00Z`))), { x: 50, y: y - 18, size: 8, font: regular, color: ink });
+        page.drawText(pdfText(transaction.transactionType === "income" ? labels.income : labels.expenses), { x: 116, y: y - 18, size: 8, font: regular, color: ink });
+        descriptionLines.forEach((lineText, index) => page.drawText(lineText, { x: 174, y: y - 17 - index * 10, size: 8, font: regular, color: ink }));
+        page.drawText(pdfText(getFundLabel(locale, transaction.fund)), { x: 414, y: y - 18, size: 8, font: regular, color: ink });
+        page.drawText(pdfText(getAccountLabel(locale, transaction.account)), { x: 534, y: y - 18, size: 8, font: regular, color: ink });
+        const amount = pdfText(`${transaction.transactionType === "income" ? "+" : "-"}${transaction.amount}`);
+        page.drawText(amount, { x: 742 - bold.widthOfTextAtSize(amount, 8), y: y - 18, size: 8, font: bold, color: ink });
+        y -= rowHeight;
+      }
     }
   }
 
