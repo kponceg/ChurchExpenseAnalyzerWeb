@@ -125,6 +125,11 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .settings-summary span { color: var(--muted); font-size: 12px; }
 .settings-summary span:last-child { margin-left: auto; }
 .settings-notice { margin: 0 0 16px; padding: 12px 14px; border-left: 3px solid var(--ink); background: var(--surface-muted); color: var(--muted); font-size: 13px; }
+.add-member-panel { display: grid; grid-template-columns: minmax(180px, .75fr) minmax(0, 1.5fr); gap: 24px; margin-bottom: 24px; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-muted); }
+.add-member-panel h2 { margin: 0; font-size: 18px; }
+.add-member-panel p { margin: 7px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.add-member-form { display: grid; gap: 12px; }
+.add-member-form .primary { justify-self: start; }
 .members-list { display: grid; gap: 12px; }
 .member-card { display: grid; grid-template-columns: 1fr; align-items: end; gap: 20px; padding: 20px; border: 1px solid var(--line); border-radius: 12px; }
 .member-identity { display: grid; gap: 5px; min-width: 0; }
@@ -163,6 +168,7 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
   .report-export-panel, .report-export-form { grid-template-columns: 1fr; }
   .edit-transaction-type { align-items: flex-start; flex-direction: column; }
   .settings-summary { align-items: flex-start; flex-direction: column; }
+  .add-member-panel { grid-template-columns: 1fr; }
   .settings-summary span:last-child { margin-left: 0; }
   .member-card, .member-role { grid-template-columns: 1fr; }
   .member-role label { grid-column: auto; }
