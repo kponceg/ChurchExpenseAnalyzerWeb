@@ -20,6 +20,7 @@ export default async function AppLayout({ children }: Readonly<{ children: React
         <nav className="nav" aria-label={text.nav.primary}>
           <Link href="/dashboard">{text.nav.dashboard}</Link>
           <Link href="/accounts">{text.nav.accounts}</Link>
+          <Link href="/categories">{text.nav.categories}</Link>
           <Link href="/activity">{text.nav.activity}</Link>
           <Link href="/transactions/new">{text.nav.transaction}</Link>
           <Link href="/reports">{text.nav.reports}</Link>
