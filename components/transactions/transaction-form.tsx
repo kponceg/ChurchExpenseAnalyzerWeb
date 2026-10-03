@@ -1,13 +1,13 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { getCategoryLabel, getMessages, type Locale } from "@/lib/i18n";
+import { getCategoryLabel, getFundLabel, getMessages, type Locale } from "@/lib/i18n";
 import type { CategoryTransactionType } from "@/server/accounting/list-financial-categories";
 
 type TransactionType = "income" | "expense";
 type Preview = { amount: string; transactionDate: string; category: string; fund: string; account: string; description: string; paymentReference?: string; transactionId: string };
 
-export function TransactionForm({ locale, initialType, accounts, categories }: { locale: Locale; initialType: TransactionType; accounts: Array<{ id: string; name: string }>; categories: Array<{ id: string; name: string; transactionType: CategoryTransactionType }> }) {
+export function TransactionForm({ locale, initialType, accounts, categories, funds }: { locale: Locale; initialType: TransactionType; accounts: Array<{ id: string; name: string }>; categories: Array<{ id: string; name: string; transactionType: CategoryTransactionType }>; funds: Array<{ id: string; name: string }> }) {
   const text = getMessages(locale);
   const [transactionType, setTransactionType] = useState<TransactionType>(initialType);
   const [preview, setPreview] = useState<Preview | null>(null);
@@ -45,7 +45,7 @@ export function TransactionForm({ locale, initialType, accounts, categories }: {
       <div className="field"><label htmlFor="amount">{labels.amount}</label><input id="amount" name="amount" inputMode="decimal" placeholder="0.00" required /></div>
       <div className="field"><label htmlFor="transactionDate">{labels.date}</label><input id="transactionDate" name="transactionDate" type="date" required /></div>
       <div className="field"><label htmlFor="category">{labels.category}</label><select key={transactionType} id="category" name="category" required defaultValue=""><option value="" disabled>{labels.selectCategory}</option>{availableCategories.map((category) => <option key={category.id} value={category.name}>{getCategoryLabel(locale, category.name)}</option>)}</select><small className="field-hint">{labels.categoryHint}</small></div>
-      <div className="field"><label htmlFor="fund">{labels.fund}</label><select id="fund" name="fund" required defaultValue=""><option value="" disabled>{labels.selectFund}</option>{text.funds.map((value, index) => <option key={value} value={value}>{text.fundLabels[index]}</option>)}</select></div>
+      <div className="field"><label htmlFor="fund">{labels.fund}</label><select id="fund" name="fund" required defaultValue=""><option value="" disabled>{labels.selectFund}</option>{funds.map((fund) => <option key={fund.id} value={fund.name}>{getFundLabel(locale, fund.name)}</option>)}</select></div>
       <div className="field full"><label htmlFor="accountId">{text.transaction.account}</label><select id="accountId" name="accountId" required defaultValue=""><option value="" disabled>{text.transaction.selectAccount}</option>{accounts.map((account) => <option key={account.id} value={account.id}>{account.name}</option>)}</select><small className="field-hint">{text.transaction.accountHint}</small></div>
       <div className="field full"><label htmlFor="description">{labels.description}</label><textarea id="description" name="description" maxLength={160} required /></div>
       {transactionType === "expense" && <div className="field full"><label htmlFor="paymentReference">{text.expense.reference}</label><input id="paymentReference" name="paymentReference" maxLength={80} /></div>}
