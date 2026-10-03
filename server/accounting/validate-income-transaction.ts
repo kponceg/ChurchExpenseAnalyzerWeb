@@ -6,13 +6,14 @@ const incomeTransactionSchema = z.object({
   transactionDate: z.string().date(),
   category: z.string().trim().min(1).max(80),
   fund: z.string().trim().min(1).max(80),
+  accountId: z.string().uuid(),
   description: z.string().trim().min(1).max(160),
   idempotencyKey: z.string().uuid(),
 });
 
 export function validateIncomeTransaction(input: unknown) {
   const parsed = incomeTransactionSchema.safeParse(input);
-  if (!parsed.success) return { ok: false as const, error: "Check the amount, date, category, fund, and description." };
+  if (!parsed.success) return { ok: false as const, error: "Check the amount, date, category, fund, account, and description." };
   return {
     ok: true as const,
     data: parsed.data,

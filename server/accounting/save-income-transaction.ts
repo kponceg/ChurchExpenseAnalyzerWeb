@@ -6,6 +6,7 @@ type IncomeTransaction = {
   transactionDate: string;
   category: string;
   fund: string;
+  accountId: string;
   description: string;
   idempotencyKey: string;
 };
@@ -19,7 +20,7 @@ export async function saveIncomeTransaction(input: IncomeTransaction) {
   if (organizationError || !organizationId) return { ok: false as const, status: 503, error: "The financial database has not been configured yet." };
 
   const [accountResult, categoryResult, fundResult] = await Promise.all([
-    supabase.from("accounts").select("id").eq("organization_id", organizationId).eq("name", "Checking").eq("active", true).single(),
+    supabase.from("accounts").select("id, name").eq("id", input.accountId).eq("organization_id", organizationId).eq("active", true).single(),
     supabase.from("categories").select("id").eq("organization_id", organizationId).eq("transaction_type", "income").eq("name", input.category).eq("active", true).single(),
     supabase.from("funds").select("id").eq("organization_id", organizationId).eq("name", input.fund).eq("active", true).single(),
   ]);
@@ -43,11 +44,11 @@ export async function saveIncomeTransaction(input: IncomeTransaction) {
   };
 
   const { data, error } = await supabase.from("transactions").insert(record).select("id, created_at").single();
-  if (!error && data) return { ok: true as const, transactionId: data.id, createdAt: data.created_at };
+  if (!error && data) return { ok: true as const, transactionId: data.id, createdAt: data.created_at, accountName: accountResult.data.name };
 
   if (error?.code === "23505") {
     const existing = await supabase.from("transactions").select("id, created_at").eq("organization_id", organizationId).eq("idempotency_key", input.idempotencyKey).single();
-    if (existing.data) return { ok: true as const, transactionId: existing.data.id, createdAt: existing.data.created_at };
+    if (existing.data) return { ok: true as const, transactionId: existing.data.id, createdAt: existing.data.created_at, accountName: accountResult.data.name };
   }
 
   return { ok: false as const, status: 500, error: "The transaction could not be saved." };

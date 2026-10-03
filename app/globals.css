@@ -74,6 +74,20 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .auth-heading .language-switcher { margin: 0; color: var(--ink); }
 .auth-form { display: grid; gap: 18px; }
 .auth-form .primary { width: 100%; }
+.account-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
+.financial-account-card { display: grid; gap: 22px; padding: 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.financial-account-card h2 { margin: 5px 0 0; font-size: 20px; }
+.account-type-label { color: var(--muted); font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: .05em; }
+.account-balance span, .account-balance strong { display: block; }
+.account-balance span { color: var(--muted); font-size: 12px; }
+.account-balance strong { margin-top: 6px; font-size: 28px; letter-spacing: -.03em; }
+.financial-account-card dl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0; padding-top: 16px; border-top: 1px solid var(--line); }
+.financial-account-card dl div { min-width: 0; }
+.financial-account-card dt { color: var(--muted); font-size: 11px; }
+.financial-account-card dd { margin: 5px 0 0; font-size: 13px; font-weight: 650; }
+.account-manage-form { display: grid; grid-template-columns: 1fr 150px auto; align-items: end; gap: 10px; padding-top: 16px; border-top: 1px solid var(--line); }
+.account-manage-form > strong { grid-column: 1 / -1; font-size: 12px; }
+.account-manage-form .secondary-button { white-space: nowrap; }
 .preview { margin-top: 20px; padding: 18px; border-left: 4px solid #111; background: var(--surface-muted); }
 .preview h2 { margin: 0 0 14px; font-size: 16px; }
 .preview dl { display: grid; grid-template-columns: 150px 1fr; gap: 9px; margin: 0; }
@@ -161,6 +175,9 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
   .nav a { text-align: center; font-size: 13px; }
   .content { padding-top: 32px; }
   .summary, .form-grid { grid-template-columns: 1fr; }
+  .account-grid { grid-template-columns: 1fr; }
+  .account-manage-form { grid-template-columns: 1fr; }
+  .account-manage-form > strong { grid-column: auto; }
   .page-heading { display: grid; }
   .page-actions { align-items: stretch; flex-direction: column; }
   .secondary-link { padding: 10px 0; text-align: center; }

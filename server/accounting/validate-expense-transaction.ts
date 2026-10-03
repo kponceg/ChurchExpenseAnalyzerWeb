@@ -6,6 +6,7 @@ const expenseTransactionSchema = z.object({
   transactionDate: z.string().date(),
   category: z.string().trim().min(1).max(80),
   fund: z.string().trim().min(1).max(80),
+  accountId: z.string().uuid(),
   description: z.string().trim().min(1).max(160),
   paymentReference: z.string().trim().max(80).optional().default(""),
   idempotencyKey: z.string().uuid(),
@@ -13,7 +14,7 @@ const expenseTransactionSchema = z.object({
 
 export function validateExpenseTransaction(input: unknown) {
   const parsed = expenseTransactionSchema.safeParse(input);
-  if (!parsed.success) return { ok: false as const, error: "Check the amount, date, category, fund, description, and payment reference." };
+  if (!parsed.success) return { ok: false as const, error: "Check the amount, date, category, fund, account, description, and payment reference." };
   return {
     ok: true as const,
     data: parsed.data,

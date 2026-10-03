@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400 });
     const saved = await saveIncomeTransaction(result.data);
     if (!saved.ok) return NextResponse.json({ error: saved.error }, { status: saved.status });
-    return NextResponse.json({ transaction: result.transaction, transactionId: saved.transactionId, createdAt: saved.createdAt }, { status: 201 });
+    return NextResponse.json({ transaction: { ...result.transaction, account: saved.accountName }, transactionId: saved.transactionId, createdAt: saved.createdAt }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }

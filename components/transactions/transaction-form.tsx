@@ -4,9 +4,9 @@ import { FormEvent, useState } from "react";
 import { getMessages, type Locale } from "@/lib/i18n";
 
 type TransactionType = "income" | "expense";
-type Preview = { amount: string; transactionDate: string; category: string; fund: string; description: string; paymentReference?: string; transactionId: string };
+type Preview = { amount: string; transactionDate: string; category: string; fund: string; account: string; description: string; paymentReference?: string; transactionId: string };
 
-export function TransactionForm({ locale, initialType }: { locale: Locale; initialType: TransactionType }) {
+export function TransactionForm({ locale, initialType, accounts }: { locale: Locale; initialType: TransactionType; accounts: Array<{ id: string; name: string }> }) {
   const text = getMessages(locale);
   const [transactionType, setTransactionType] = useState<TransactionType>(initialType);
   const [preview, setPreview] = useState<Preview | null>(null);
@@ -54,9 +54,10 @@ export function TransactionForm({ locale, initialType }: { locale: Locale; initi
       <div className="field"><label htmlFor="transactionDate">{labels.date}</label><input id="transactionDate" name="transactionDate" type="date" required /></div>
       <div className="field"><label htmlFor="category">{labels.category}</label><select key={transactionType} id="category" name="category" required defaultValue=""><option value="" disabled>{labels.selectCategory}</option>{transactionType === "income" ? incomeGroups.map((group) => <optgroup key={group.label} label={group.label}>{group.options.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</optgroup>) : expenseGroups.map((group) => <optgroup key={group.label} label={group.label}>{group.values.map((value) => { const index = text.categories.indexOf(value as typeof text.categories[number]); return <option key={value} value={value}>{text.categoryLabels[index]}</option>; })}</optgroup>)}</select><small className="field-hint">{labels.categoryHint}</small></div>
       <div className="field"><label htmlFor="fund">{labels.fund}</label><select id="fund" name="fund" required defaultValue=""><option value="" disabled>{labels.selectFund}</option>{text.funds.map((value, index) => <option key={value} value={value}>{text.fundLabels[index]}</option>)}</select></div>
+      <div className="field full"><label htmlFor="accountId">{text.transaction.account}</label><select id="accountId" name="accountId" required defaultValue=""><option value="" disabled>{text.transaction.selectAccount}</option>{accounts.map((account) => <option key={account.id} value={account.id}>{account.name}</option>)}</select><small className="field-hint">{text.transaction.accountHint}</small></div>
       <div className="field full"><label htmlFor="description">{labels.description}</label><textarea id="description" name="description" maxLength={160} required /></div>
       {transactionType === "expense" && <div className="field full"><label htmlFor="paymentReference">{text.expense.reference}</label><input id="paymentReference" name="paymentReference" maxLength={80} /></div>}
     </div><div className="actions"><button className="primary" disabled={submitting}>{submitting ? labels.saving : labels.save}</button>{error && <p className="message error" role="alert">{error}</p>}</div></form>
-    {preview && <div className="preview" aria-live="polite"><h2>{labels.saved}</h2><dl><dt>{transactionType === "income" ? text.income.reference : text.expense.transactionReference}</dt><dd>{preview.transactionId.slice(0, 8).toUpperCase()}</dd><dt>{labels.amount}</dt><dd>{preview.amount}</dd><dt>{labels.date}</dt><dd>{preview.transactionDate}</dd><dt>{labels.category}</dt><dd>{preview.category}</dd><dt>{labels.fund}</dt><dd>{preview.fund}</dd><dt>{labels.description}</dt><dd>{preview.description}</dd>{transactionType === "expense" && <><dt>{text.expense.paymentReference}</dt><dd>{preview.paymentReference || text.expense.none}</dd></>}</dl></div>}
+    {preview && <div className="preview" aria-live="polite"><h2>{labels.saved}</h2><dl><dt>{transactionType === "income" ? text.income.reference : text.expense.transactionReference}</dt><dd>{preview.transactionId.slice(0, 8).toUpperCase()}</dd><dt>{labels.amount}</dt><dd>{preview.amount}</dd><dt>{labels.date}</dt><dd>{preview.transactionDate}</dd><dt>{labels.category}</dt><dd>{preview.category}</dd><dt>{labels.fund}</dt><dd>{preview.fund}</dd><dt>{text.transaction.account}</dt><dd>{preview.account}</dd><dt>{labels.description}</dt><dd>{preview.description}</dd>{transactionType === "expense" && <><dt>{text.expense.paymentReference}</dt><dd>{preview.paymentReference || text.expense.none}</dd></>}</dl></div>}
   </section>;
 }
