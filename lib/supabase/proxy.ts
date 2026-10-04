@@ -20,7 +20,9 @@ export async function updateSession(request: NextRequest) {
 
   const { data } = await supabase.auth.getClaims();
   const isSignedIn = Boolean(data?.claims?.sub);
-  const isProtectedRoute = !request.nextUrl.pathname.startsWith("/login");
+  const publicRoutes = ["/login", "/signup", "/auth/invite", "/auth/callback", "/auth/confirm", "/auth/recovery"];
+  const isPublicRoute = publicRoutes.some((route) => request.nextUrl.pathname === route || request.nextUrl.pathname.startsWith(`${route}/`));
+  const isProtectedRoute = !isPublicRoute;
 
   if (!isSignedIn && isProtectedRoute) {
     const url = request.nextUrl.clone();
@@ -29,7 +31,7 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (isSignedIn && request.nextUrl.pathname === "/login") {
+  if (isSignedIn && ["/login", "/signup"].includes(request.nextUrl.pathname)) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     url.search = "";

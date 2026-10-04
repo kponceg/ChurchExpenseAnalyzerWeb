@@ -74,6 +74,8 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .auth-heading .language-switcher { margin: 0; color: var(--ink); }
 .auth-form { display: grid; gap: 18px; }
 .auth-form .primary { width: 100%; }
+.auth-alternate { margin: 22px 0 0; color: var(--muted); font-size: 13px; text-align: center; }
+.auth-alternate a { color: var(--ink); font-weight: 650; text-decoration: underline; text-underline-offset: 3px; }
 .account-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
 .financial-account-card { display: grid; gap: 22px; padding: 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
 .financial-account-card h2 { margin: 5px 0 0; font-size: 20px; }
@@ -162,7 +164,10 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .member-identity { display: grid; gap: 5px; min-width: 0; }
 .member-identity strong { overflow: hidden; text-overflow: ellipsis; }
 .member-identity span { width: max-content; padding: 3px 7px; border-radius: 999px; color: var(--success); background: #eaf6ef; font-size: 10px; font-weight: 700; }
+.member-identity .inactive-access { color: var(--danger); background: #faecea; }
+.inactive-member { background: #fafafa; }
 .member-identity small { color: var(--muted); }
+.setup-link-button { justify-self: start; margin-top: 8px; }
 .member-role { display: grid; grid-template-columns: minmax(130px, 1fr) auto; gap: 8px; align-items: end; }
 .member-role label { grid-column: 1 / -1; font-size: 12px; font-weight: 650; }
 .member-role select { min-height: 44px; padding: 0 36px 0 12px; border: 1px solid #bcbcbc; border-radius: 8px; background: #fff; }
