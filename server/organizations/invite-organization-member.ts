@@ -20,9 +20,7 @@ export async function inviteOrganizationMember(input: unknown) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   let redirectTo: string;
   try {
-    const callbackUrl = new URL("/auth/callback", siteUrl);
-    callbackUrl.searchParams.set("next", "/auth/invite");
-    redirectTo = callbackUrl.toString();
+    redirectTo = new URL("/auth/invite", siteUrl).toString();
   } catch {
     return { ok: false as const, status: 500, error: "The website URL is not configured correctly." };
   }

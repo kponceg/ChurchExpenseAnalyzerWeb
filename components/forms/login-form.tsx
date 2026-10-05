@@ -4,13 +4,14 @@ import { FormEvent, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-type LoginLabels = { email: string; password: string; signIn: string; signingIn: string; error: string };
+type LoginLabels = { email: string; password: string; showPassword: string; signIn: string; signingIn: string; error: string };
 
 export function LoginForm({ labels }: { labels: LoginLabels }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -43,8 +44,9 @@ export function LoginForm({ labels }: { labels: LoginLabels }) {
       </div>
       <div className="field">
         <label htmlFor="password">{labels.password}</label>
-        <input id="password" name="password" type="password" autoComplete="current-password" minLength={8} required />
+        <input id="password" name="password" type={showPassword ? "text" : "password"} autoComplete="current-password" minLength={8} required />
       </div>
+      <label className="password-visibility"><input type="checkbox" checked={showPassword} onChange={(event) => setShowPassword(event.target.checked)} />{labels.showPassword}</label>
       {error && <p className="message error" role="alert">{error}</p>}
       <button className="primary" disabled={submitting}>{submitting ? labels.signingIn : labels.signIn}</button>
     </form>
