@@ -2,7 +2,11 @@ import { MembersPanel } from "@/components/settings/members-panel";
 import { getMessages } from "@/lib/i18n";
 import { getLocale } from "@/lib/locale";
 import { getOrganizationMembers } from "@/server/organizations/get-organization-members";
+import { getCurrentMembership } from "@/server/organizations/get-current-membership";
+import { redirect } from "next/navigation";
 export default async function SettingsPage() {
+  const membership = await getCurrentMembership();
+  if (!membership?.canManage) redirect("/dashboard");
   const locale = await getLocale();
   const text = getMessages(locale);
   const result = await getOrganizationMembers();

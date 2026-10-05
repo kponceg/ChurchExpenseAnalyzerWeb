@@ -2,6 +2,7 @@ import Link from "next/link";
 import { listTransactions } from "@/server/accounting/list-transactions";
 import { getAccountLabel, getCategoryLabel, getFundLabel, getMessages } from "@/lib/i18n";
 import { getLocale } from "@/lib/locale";
+import { getCurrentMembership } from "@/server/organizations/get-current-membership";
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 
@@ -9,6 +10,7 @@ export default async function ActivityPage() {
   const result = await listTransactions();
   const locale = await getLocale();
   const text = getMessages(locale);
+  const membership = await getCurrentMembership();
   const date = new Intl.DateTimeFormat(locale === "es" ? "es-US" : "en-US", { month: "short", day: "numeric", year: "numeric" });
   const dateTime = new Intl.DateTimeFormat(locale === "es" ? "es-US" : "en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
 
@@ -17,7 +19,7 @@ export default async function ActivityPage() {
       <p className="eyebrow">{text.activity.eyebrow}</p>
       <div className="page-heading">
         <div><h1>{text.activity.title}</h1><p className="lede">{text.activity.lede}</p></div>
-        <Link className="primary" href="/transactions/new">{text.nav.transaction}</Link>
+        {membership?.canRecordTransactions && <Link className="primary" href="/transactions/new">{text.nav.transaction}</Link>}
       </div>
 
       {!result.ok ? (
@@ -39,7 +41,7 @@ export default async function ActivityPage() {
                   <td>{getFundLabel(locale, transaction.fund)}</td>
                   <td>{getAccountLabel(locale, transaction.account)}</td>
                   <td className={`amount ${transaction.transactionType === "income" ? "positive" : "negative"}`}>{transaction.transactionType === "income" ? "+" : "−"}{currency.format(transaction.amount)}</td>
-                  <td>{transaction.status === "posted" ? <Link className="table-action" href={`/transactions/${transaction.id}/edit`}>{text.activity.edit}</Link> : "—"}</td>
+                  <td>{transaction.status === "posted" && membership?.canRecordTransactions ? <Link className="table-action" href={`/transactions/${transaction.id}/edit`}>{text.activity.edit}</Link> : "—"}</td>
                 </tr>
               ))}
             </tbody>

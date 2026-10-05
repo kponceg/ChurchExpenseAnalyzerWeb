@@ -5,6 +5,7 @@ import { LanguageSwitcher } from "@/components/navigation/language-switcher";
 import { getMessages } from "@/lib/i18n";
 import { getLocale } from "@/lib/locale";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentMembership } from "@/server/organizations/get-current-membership";
 
 export default async function AppLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const supabase = await createClient();
@@ -12,6 +13,7 @@ export default async function AppLayout({ children }: Readonly<{ children: React
   if (!user) redirect("/login");
   const locale = await getLocale();
   const text = getMessages(locale);
+  const membership = await getCurrentMembership();
 
   return (
     <div className="shell">
@@ -24,9 +26,9 @@ export default async function AppLayout({ children }: Readonly<{ children: React
           <Link href="/funds">{text.nav.funds}</Link>
           <Link href="/budgets">{text.nav.budgets}</Link>
           <Link href="/activity">{text.nav.activity}</Link>
-          <Link href="/transactions/new">{text.nav.transaction}</Link>
+          {membership?.canRecordTransactions && <Link href="/transactions/new">{text.nav.transaction}</Link>}
           <Link href="/reports">{text.nav.reports}</Link>
-          <Link href="/settings">{text.nav.settings}</Link>
+          {membership?.canManage && <Link href="/settings">{text.nav.settings}</Link>}
         </nav>
         <div className="account-summary"><span>{text.account.signedIn}</span><strong>{user.email}</strong><SignOutButton labels={text.account} /><LanguageSwitcher locale={locale} label={text.language} /></div>
       </aside>
