@@ -4,6 +4,7 @@ import type { OrganizationRole } from "@/server/organizations/get-organization-m
 
 const transactionRoles: OrganizationRole[] = ["administrator", "treasurer", "data_entry"];
 const voidRoles: OrganizationRole[] = ["administrator", "treasurer"];
+const reviewRoles: OrganizationRole[] = ["administrator", "treasurer", "approver"];
 
 export async function getCurrentMembership() {
   const supabase = await createClient();
@@ -27,5 +28,6 @@ export async function getCurrentMembership() {
     canManage: role === "administrator",
     canRecordTransactions: transactionRoles.includes(role),
     canVoidTransactions: voidRoles.includes(role),
+    canReviewTransactions: reviewRoles.includes(role),
   };
 }

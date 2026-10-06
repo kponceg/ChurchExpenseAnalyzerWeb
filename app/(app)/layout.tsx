@@ -26,6 +26,7 @@ export default async function AppLayout({ children }: Readonly<{ children: React
           <Link href="/funds">{text.nav.funds}</Link>
           <Link href="/budgets">{text.nav.budgets}</Link>
           <Link href="/activity">{text.nav.activity}</Link>
+          {membership?.canReviewTransactions && <Link href="/approvals">{text.nav.approvals}</Link>}
           {membership?.canRecordTransactions && <Link href="/transactions/new">{text.nav.transaction}</Link>}
           <Link href="/reports">{text.nav.reports}</Link>
           {membership?.canManage && <Link href="/settings">{text.nav.settings}</Link>}
