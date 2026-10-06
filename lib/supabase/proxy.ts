@@ -20,7 +20,7 @@ export async function updateSession(request: NextRequest) {
 
   const { data } = await supabase.auth.getClaims();
   const isSignedIn = Boolean(data?.claims?.sub);
-  const publicRoutes = ["/login", "/signup", "/auth/invite", "/auth/callback", "/auth/confirm", "/auth/recovery"];
+  const publicRoutes = ["/login", "/signup", "/forgot-password", "/auth/invite", "/auth/reset", "/auth/callback", "/auth/confirm", "/auth/recovery"];
   const isPublicRoute = publicRoutes.some((route) => request.nextUrl.pathname === route || request.nextUrl.pathname.startsWith(`${route}/`));
   const isProtectedRoute = !isPublicRoute;
 
