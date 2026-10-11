@@ -14,6 +14,7 @@ export type TransactionActivityItem = {
   status: "posted" | "reversed";
   voidReason: string | null;
   voidedAt: string | null;
+  attachments: Array<{ id: string; filename: string }>;
 };
 
 function relationName(value: { name: string } | { name: string }[] | null) {
@@ -25,7 +26,7 @@ export async function listTransactions() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("transactions")
-    .select("id, transaction_type, transaction_date, amount, description, payment_reference, status, void_reason, voided_at, category:categories(name), fund:funds(name), account:accounts(name)")
+    .select("id, transaction_type, transaction_date, amount, description, payment_reference, status, void_reason, voided_at, category:categories(name), fund:funds(name), account:accounts(name), attachments:transaction_attachments(id, original_filename)")
     .in("status", ["posted", "reversed"])
     .in("transaction_type", ["income", "expense"])
     .order("transaction_date", { ascending: false })
@@ -47,6 +48,7 @@ export async function listTransactions() {
     status: row.status as "posted" | "reversed",
     voidReason: row.void_reason,
     voidedAt: row.voided_at,
+    attachments: (row.attachments ?? []).map((attachment) => ({ id: attachment.id, filename: attachment.original_filename })),
   }));
 
   return { ok: true as const, transactions };

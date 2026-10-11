@@ -41,7 +41,7 @@ export default async function ActivityPage() {
                   <td>{getFundLabel(locale, transaction.fund)}</td>
                   <td>{getAccountLabel(locale, transaction.account)}</td>
                   <td className={`amount ${transaction.transactionType === "income" ? "positive" : "negative"}`}>{transaction.transactionType === "income" ? "+" : "−"}{currency.format(transaction.amount)}</td>
-                  <td>{transaction.status === "posted" && membership?.canRecordTransactions ? <Link className="table-action" href={`/transactions/${transaction.id}/edit`}>{text.activity.edit}</Link> : "—"}</td>
+                  <td><div className="activity-actions">{transaction.status === "posted" && membership?.canRecordTransactions && <Link className="table-action" href={`/transactions/${transaction.id}/edit`}>{text.activity.edit}</Link>}{transaction.attachments.map((attachment) => <a className="table-action" href={`/api/transactions/${transaction.id}/attachments/${attachment.id}`} target="_blank" rel="noreferrer" title={attachment.filename} key={attachment.id}>{text.activity.viewAttachment}</a>)}{transaction.status !== "posted" && transaction.attachments.length === 0 && "—"}</div></td>
                 </tr>
               ))}
             </tbody>

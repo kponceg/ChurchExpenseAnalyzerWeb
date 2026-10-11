@@ -5,7 +5,7 @@ import { getCategoryLabel, getFundLabel, getMessages, type Locale } from "@/lib/
 import type { CategoryTransactionType } from "@/server/accounting/list-financial-categories";
 
 type TransactionType = "income" | "expense";
-type Preview = { amount: string; transactionDate: string; category: string; fund: string; account: string; description: string; paymentReference?: string; transactionId: string };
+type Preview = { amount: string; transactionDate: string; category: string; fund: string; account: string; description: string; paymentReference?: string; transactionId: string; attachmentName?: string };
 
 export function TransactionForm({ locale, initialType, accounts, categories, funds }: { locale: Locale; initialType: TransactionType; accounts: Array<{ id: string; name: string }>; categories: Array<{ id: string; name: string; transactionType: CategoryTransactionType }>; funds: Array<{ id: string; name: string }> }) {
   const text = getMessages(locale);
@@ -30,12 +30,26 @@ export function TransactionForm({ locale, initialType, accounts, categories, fun
     setError("");
     setPreview(null);
     const form = new FormData(formElement);
+    const attachment = form.get("attachment");
+    form.delete("attachment");
     form.delete("transactionType");
     const payload = { ...Object.fromEntries(form.entries()), idempotencyKey: crypto.randomUUID() };
     const response = await fetch(`/api/transactions/${transactionType}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
     const result = await response.json();
     if (!response.ok) setError(locale === "es" ? labels.invalid : (result.error ?? labels.invalid));
-    else { setPreview({ ...result.transaction, transactionId: result.transactionId }); formElement.reset(); }
+    else {
+      let attachmentName: string | undefined;
+      if (attachment instanceof File && attachment.size > 0) {
+        const uploadForm = new FormData();
+        uploadForm.set("file", attachment);
+        const uploadResponse = await fetch(`/api/transactions/${result.transactionId}/attachments`, { method: "POST", body: uploadForm });
+        const uploadResult = await uploadResponse.json();
+        if (!uploadResponse.ok) setError(locale === "es" ? text.transaction.attachmentUploadFailed : (uploadResult.error ?? text.transaction.attachmentUploadFailed));
+        else attachmentName = uploadResult.attachment.original_filename;
+      }
+      setPreview({ ...result.transaction, transactionId: result.transactionId, attachmentName });
+      formElement.reset();
+    }
     setSubmitting(false);
   }
 
@@ -49,7 +63,8 @@ export function TransactionForm({ locale, initialType, accounts, categories, fun
       <div className="field full"><label htmlFor="accountId">{text.transaction.account}</label><select id="accountId" name="accountId" required defaultValue=""><option value="" disabled>{text.transaction.selectAccount}</option>{accounts.map((account) => <option key={account.id} value={account.id}>{account.name}</option>)}</select><small className="field-hint">{text.transaction.accountHint}</small></div>
       <div className="field full"><label htmlFor="description">{labels.description}</label><textarea id="description" name="description" maxLength={160} required /></div>
       {transactionType === "expense" && <div className="field full"><label htmlFor="paymentReference">{text.expense.reference}</label><input id="paymentReference" name="paymentReference" maxLength={80} /></div>}
+      <div className="field full"><label htmlFor="attachment">{text.transaction.attachment}</label><input id="attachment" name="attachment" type="file" accept="application/pdf,image/jpeg,image/png,image/webp" /><small className="field-hint">{text.transaction.attachmentHint}</small></div>
     </div><div className="actions"><button className="primary" disabled={submitting}>{submitting ? labels.saving : labels.save}</button>{error && <p className="message error" role="alert">{error}</p>}</div></form>
-    {preview && <div className="preview" aria-live="polite"><h2>{labels.saved}</h2><dl><dt>{transactionType === "income" ? text.income.reference : text.expense.transactionReference}</dt><dd>{preview.transactionId.slice(0, 8).toUpperCase()}</dd><dt>{labels.amount}</dt><dd>{preview.amount}</dd><dt>{labels.date}</dt><dd>{preview.transactionDate}</dd><dt>{labels.category}</dt><dd>{preview.category}</dd><dt>{labels.fund}</dt><dd>{preview.fund}</dd><dt>{text.transaction.account}</dt><dd>{preview.account}</dd><dt>{labels.description}</dt><dd>{preview.description}</dd>{transactionType === "expense" && <><dt>{text.expense.paymentReference}</dt><dd>{preview.paymentReference || text.expense.none}</dd></>}</dl></div>}
+    {preview && <div className="preview" aria-live="polite"><h2>{labels.saved}</h2><dl><dt>{transactionType === "income" ? text.income.reference : text.expense.transactionReference}</dt><dd>{preview.transactionId.slice(0, 8).toUpperCase()}</dd><dt>{labels.amount}</dt><dd>{preview.amount}</dd><dt>{labels.date}</dt><dd>{preview.transactionDate}</dd><dt>{labels.category}</dt><dd>{preview.category}</dd><dt>{labels.fund}</dt><dd>{preview.fund}</dd><dt>{text.transaction.account}</dt><dd>{preview.account}</dd><dt>{labels.description}</dt><dd>{preview.description}</dd>{transactionType === "expense" && <><dt>{text.expense.paymentReference}</dt><dd>{preview.paymentReference || text.expense.none}</dd></>}{preview.attachmentName && <><dt>{text.transaction.attachment}</dt><dd>{preview.attachmentName}</dd></>}</dl></div>}
   </section>;
 }

@@ -150,6 +150,7 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .category-report-heading h2 { margin: 0; font-size: 18px; }
 .report-detail-table { min-width: 820px; }
 .table-action { font-weight: 650; text-decoration: underline; text-underline-offset: 3px; }
+.activity-actions { display: grid; gap: 8px; min-width: 110px; }
 .edit-transaction-type { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
 .edit-transaction-type > span { font-size: 13px; font-weight: 650; }
 .edit-transaction-type small { color: var(--muted); }
