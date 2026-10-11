@@ -53,6 +53,6 @@ export async function listAccountReconciliations() {
     ok: true as const,
     accounts: accountResult.data ?? [],
     reconciliations,
-    canReconcile: membership.role === "administrator" || membership.role === "treasurer",
+    canReconcile: membership.canReconcile,
   };
 }

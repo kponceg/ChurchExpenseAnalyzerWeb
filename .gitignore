@@ -24,6 +24,9 @@ dist/
 build/
 .vercel/
 coverage/
+playwright-report/
+test-results/
+.playwright/
 
 # Local databases and application data
 *.db

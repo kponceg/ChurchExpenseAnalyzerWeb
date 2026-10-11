@@ -76,6 +76,6 @@ export async function getAccountReconciliation(id: string) {
       completedAt: reconciliation.completed_at,
     },
     transactions,
-    canReconcile: membership.role === "administrator" || membership.role === "treasurer",
+    canReconcile: membership.canReconcile,
   };
 }

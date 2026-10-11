@@ -1,10 +1,7 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import type { OrganizationRole } from "@/server/organizations/get-organization-members";
-
-const transactionRoles: OrganizationRole[] = ["administrator", "treasurer", "data_entry"];
-const voidRoles: OrganizationRole[] = ["administrator", "treasurer"];
-const reviewRoles: OrganizationRole[] = ["administrator", "treasurer", "approver"];
+import { getRoleCapabilities } from "@/server/organizations/role-capabilities";
 
 export async function getCurrentMembership() {
   const supabase = await createClient();
@@ -25,9 +22,6 @@ export async function getCurrentMembership() {
   return {
     organizationId: data.organization_id,
     role,
-    canManage: role === "administrator",
-    canRecordTransactions: transactionRoles.includes(role),
-    canVoidTransactions: voidRoles.includes(role),
-    canReviewTransactions: reviewRoles.includes(role),
+    ...getRoleCapabilities(role),
   };
 }

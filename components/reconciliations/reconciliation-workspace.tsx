@@ -3,12 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale } from "@/lib/i18n";
+import { calculateReconciliation, decimalToCents } from "@/lib/reconciliation-calculations";
 import type { ReconciliationTransaction } from "@/server/accounting/get-account-reconciliation";
 
 type Reconciliation = { id: string; accountName: string; periodStart: string; periodEnd: string; beginningBalance: string; statementEndingBalance: string; status: "draft" | "completed"; notes: string | null; completedAt: string | null };
 type Labels = { back: string; draft: string; completed: string; period: string; beginningBalance: string; clearedActivity: string; clearedBalance: string; statementBalance: string; difference: string; instructions: string; date: string; description: string; reference: string; amount: string; cleared: string; noTransactions: string; complete: string; completing: string; completeHint: string; completedMessage: string; cancel: string; cancelling: string; cancelConfirm: string; error: string };
-
-function toCents(value: string) { const negative = value.startsWith("-"); const [whole, fraction = ""] = (negative ? value.slice(1) : value).split("."); const cents = BigInt(whole || "0") * 100n + BigInt(`${fraction}00`.slice(0, 2)); return negative ? -cents : cents; }
 
 export function ReconciliationWorkspace({ locale, reconciliation, transactions, canReconcile, labels }: { locale: Locale; reconciliation: Reconciliation; transactions: ReconciliationTransaction[]; canReconcile: boolean; labels: Labels }) {
   const router = useRouter();
@@ -16,9 +15,7 @@ export function ReconciliationWorkspace({ locale, reconciliation, transactions, 
   const [error, setError] = useState("");
   const currency = new Intl.NumberFormat(locale === "es" ? "es-US" : "en-US", { style: "currency", currency: "USD" });
   const date = new Intl.DateTimeFormat(locale === "es" ? "es-US" : "en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
-  const clearedActivity = transactions.filter((transaction) => transaction.cleared).reduce((sum, transaction) => sum + (transaction.transactionType === "income" ? toCents(transaction.amount) : -toCents(transaction.amount)), 0n);
-  const clearedBalance = toCents(reconciliation.beginningBalance) + clearedActivity;
-  const difference = toCents(reconciliation.statementEndingBalance) - clearedBalance;
+  const { clearedActivity, clearedBalance, difference } = calculateReconciliation(reconciliation.beginningBalance, reconciliation.statementEndingBalance, transactions);
   const format = (cents: bigint) => currency.format(Number(cents) / 100);
   const editable = reconciliation.status === "draft" && canReconcile;
 
@@ -46,7 +43,7 @@ export function ReconciliationWorkspace({ locale, reconciliation, transactions, 
   }
 
   return <>
-    <section className="reconciliation-summary"><div><span className={`transaction-status ${reconciliation.status}`}>{reconciliation.status === "draft" ? labels.draft : labels.completed}</span><h2>{reconciliation.accountName}</h2><p>{labels.period}: {date.format(new Date(`${reconciliation.periodStart}T00:00:00Z`))} – {date.format(new Date(`${reconciliation.periodEnd}T00:00:00Z`))}</p>{reconciliation.notes && <p>{reconciliation.notes}</p>}</div><dl><div><dt>{labels.beginningBalance}</dt><dd>{format(toCents(reconciliation.beginningBalance))}</dd></div><div><dt>{labels.clearedActivity}</dt><dd>{format(clearedActivity)}</dd></div><div><dt>{labels.clearedBalance}</dt><dd>{format(clearedBalance)}</dd></div><div><dt>{labels.statementBalance}</dt><dd>{format(toCents(reconciliation.statementEndingBalance))}</dd></div><div className="reconciliation-difference"><dt>{labels.difference}</dt><dd className={difference === 0n ? "positive" : "negative"}>{format(difference)}</dd></div></dl></section>
+    <section className="reconciliation-summary"><div><span className={`transaction-status ${reconciliation.status}`}>{reconciliation.status === "draft" ? labels.draft : labels.completed}</span><h2>{reconciliation.accountName}</h2><p>{labels.period}: {date.format(new Date(`${reconciliation.periodStart}T00:00:00Z`))} – {date.format(new Date(`${reconciliation.periodEnd}T00:00:00Z`))}</p>{reconciliation.notes && <p>{reconciliation.notes}</p>}</div><dl><div><dt>{labels.beginningBalance}</dt><dd>{format(decimalToCents(reconciliation.beginningBalance))}</dd></div><div><dt>{labels.clearedActivity}</dt><dd>{format(clearedActivity)}</dd></div><div><dt>{labels.clearedBalance}</dt><dd>{format(clearedBalance)}</dd></div><div><dt>{labels.statementBalance}</dt><dd>{format(decimalToCents(reconciliation.statementEndingBalance))}</dd></div><div className="reconciliation-difference"><dt>{labels.difference}</dt><dd className={difference === 0n ? "positive" : "negative"}>{format(difference)}</dd></div></dl></section>
     <p className="settings-notice">{labels.instructions}</p>
     {transactions.length === 0 ? <section className="state-panel"><p>{labels.noTransactions}</p></section> : <div className="table-wrap"><table className="activity-table reconciliation-table"><thead><tr><th scope="col">{labels.cleared}</th><th scope="col">{labels.date}</th><th scope="col">{labels.description}</th><th scope="col">{labels.reference}</th><th scope="col">{labels.amount}</th></tr></thead><tbody>{transactions.map((transaction) => <tr key={transaction.id}><td><input type="checkbox" checked={transaction.cleared} disabled={!editable || busy !== null} onChange={() => toggle(transaction)} aria-label={`${labels.cleared}: ${transaction.description}`} /></td><td>{date.format(new Date(`${transaction.transactionDate}T00:00:00Z`))}</td><td><strong>{transaction.description}</strong><span className="reference">{transaction.id.slice(0, 8).toUpperCase()}</span></td><td>{transaction.paymentReference ?? "—"}</td><td className={`amount ${transaction.transactionType === "income" ? "positive" : "negative"}`}>{transaction.transactionType === "income" ? "+" : "−"}{currency.format(Number(transaction.amount))}</td></tr>)}</tbody></table></div>}
     {error && <p className="message error reconciliation-error" role="alert">{error}</p>}
