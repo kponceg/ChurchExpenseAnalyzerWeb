@@ -211,6 +211,13 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .member-role select { min-height: 44px; padding: 0 36px 0 12px; border: 1px solid #bcbcbc; border-radius: 8px; background: #fff; }
 .member-role-hint { grid-column: 1 / -1; color: var(--muted); }
 .role-badge { justify-self: start; padding: 8px 10px; border-radius: 8px; background: var(--surface-muted); font-size: 13px; }
+.backup-panel { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(220px, .8fr); gap: 24px; margin-top: 28px; padding: 22px; border: 1px solid var(--line); border-radius: 12px; }
+.backup-panel h2 { margin: 0; font-size: 18px; }
+.backup-panel p { margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.backup-panel .backup-contents { font-size: 12px; }
+.backup-actions { display: grid; align-content: start; gap: 14px; padding-left: 22px; border-left: 1px solid var(--line); }
+.backup-actions p { margin: 0; color: var(--danger); }
+.backup-actions .primary { justify-self: start; text-align: center; }
 .report-filters { display: flex; align-items: end; gap: 12px; margin: 0 0 28px; }
 .report-filters label { align-self: center; font-size: 13px; font-weight: 650; }
 .report-filters select { min-width: 120px; min-height: 44px; padding: 0 36px 0 12px; border: 1px solid #bcbcbc; border-radius: 8px; color: var(--ink); background: #fff; }
@@ -238,6 +245,8 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
   .budget-card, .budget-card dl { grid-template-columns: 1fr; }
   .reconciliation-card, .reconciliation-card dl { grid-template-columns: 1fr; }
   .reconciliation-summary, .reconciliation-summary dl { grid-template-columns: 1fr; }
+  .backup-panel { grid-template-columns: 1fr; }
+  .backup-actions { padding: 18px 0 0; border-top: 1px solid var(--line); border-left: 0; }
   .reconciliation-summary .reconciliation-difference { grid-column: auto; }
   .reconciliation-controls { align-items: stretch; flex-direction: column; }
   .category-manage-form > strong { grid-column: auto; }

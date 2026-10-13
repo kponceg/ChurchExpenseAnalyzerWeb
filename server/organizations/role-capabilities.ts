@@ -8,5 +8,6 @@ export function getRoleCapabilities(role: OrganizationRole) {
     canReviewTransactions: ["administrator", "treasurer", "approver"].includes(role),
     canReconcile: ["administrator", "treasurer"].includes(role),
     canViewAuditLog: ["administrator", "treasurer"].includes(role),
+    canExportBackup: role === "administrator",
   };
 }
