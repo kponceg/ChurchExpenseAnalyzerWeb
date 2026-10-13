@@ -7,5 +7,6 @@ export function getRoleCapabilities(role: OrganizationRole) {
     canVoidTransactions: ["administrator", "treasurer"].includes(role),
     canReviewTransactions: ["administrator", "treasurer", "approver"].includes(role),
     canReconcile: ["administrator", "treasurer"].includes(role),
+    canViewAuditLog: ["administrator", "treasurer"].includes(role),
   };
 }

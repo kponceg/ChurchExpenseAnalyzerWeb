@@ -144,6 +144,8 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .state-panel p { margin: 0; color: var(--muted); }
 .table-wrap { margin-top: 28px; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
 .activity-table { width: 100%; min-width: 880px; border-collapse: collapse; }
+.audit-table { min-width: 760px; }
+.audit-table td:first-child { white-space: nowrap; }
 .activity-table th, .activity-table td { padding: 15px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .activity-table th { color: var(--muted); background: var(--surface-muted); font-size: 12px; font-weight: 650; }
 .activity-table tbody tr:last-child td { border-bottom: 0; }

@@ -30,6 +30,7 @@ export default async function AppLayout({ children }: Readonly<{ children: React
           {membership?.canReviewTransactions && <Link href="/approvals">{text.nav.approvals}</Link>}
           {membership?.canRecordTransactions && <Link href="/transactions/new">{text.nav.transaction}</Link>}
           <Link href="/reports">{text.nav.reports}</Link>
+          {membership?.canViewAuditLog && <Link href="/audit">{text.nav.audit}</Link>}
           {membership?.canManage && <Link href="/settings">{text.nav.settings}</Link>}
         </nav>
         <div className="account-summary"><span>{text.account.signedIn}</span><strong>{user.email}</strong><SignOutButton labels={text.account} /><LanguageSwitcher locale={locale} label={text.language} /></div>
