@@ -91,21 +91,21 @@ export default async function ActivityPage({ searchParams }: { searchParams: Pro
       ) : result.transactions.length === 0 ? (
         <section className="state-panel"><h2>{hasFilters ? text.activity.noMatches : text.activity.empty}</h2><p>{hasFilters ? text.activity.noMatchesText : text.activity.emptyText}</p></section>
       ) : (
-        <div className="table-wrap">
-          <table className="activity-table">
+        <div className="table-wrap activity-table-wrap">
+          <table className="activity-table activity-register">
             <thead><tr><th scope="col">{text.activity.date}</th><th scope="col">{text.activity.type}</th><th scope="col">{text.activity.status}</th><th scope="col">{text.activity.description}</th><th scope="col">{text.activity.category}</th><th scope="col">{text.activity.fund}</th><th scope="col">{text.activity.account}</th><th scope="col">{text.activity.amount}</th><th scope="col">{text.activity.actions}</th></tr></thead>
             <tbody>
               {result.transactions.map((transaction) => (
                 <tr key={transaction.id} className={transaction.status === "reversed" ? "voided-row" : undefined}>
-                  <td>{date.format(new Date(`${transaction.transactionDate}T00:00:00`))}</td>
-                  <td><span className={`transaction-type ${transaction.transactionType}`}>{transaction.transactionType === "income" ? text.activity.incomeType : text.activity.expenseType}</span></td>
-                  <td><span className={`transaction-status ${transaction.status}`}>{transaction.status === "posted" ? text.activity.posted : text.activity.voided}</span></td>
-                  <td><strong>{transaction.description}</strong><span className="reference">{text.activity.ref} {transaction.id.slice(0, 8).toUpperCase()}{transaction.paymentReference ? ` · ${text.activity.paymentRef}: ${transaction.paymentReference}` : ""}</span>{transaction.status === "reversed" && <span className="void-details">{text.activity.voidReason}: {transaction.voidReason}<br />{transaction.voidedAt ? `${text.activity.voidedOn}: ${dateTime.format(new Date(transaction.voidedAt))}` : ""}</span>}</td>
-                  <td>{getCategoryLabel(locale, transaction.category)}</td>
-                  <td>{getFundLabel(locale, transaction.fund)}</td>
-                  <td>{getAccountLabel(locale, transaction.account)}</td>
-                  <td className={`amount ${transaction.transactionType === "income" ? "positive" : "negative"}`}>{transaction.transactionType === "income" ? "+" : "−"}{currency.format(transaction.amount)}</td>
-                  <td><div className="activity-actions">{transaction.status === "posted" && membership?.canRecordTransactions && <Link className="table-action" href={`/transactions/${transaction.id}/edit`}>{text.activity.edit}</Link>}{transaction.attachments.map((attachment) => <a className="table-action" href={`/api/transactions/${transaction.id}/attachments/${attachment.id}`} target="_blank" rel="noreferrer" title={attachment.filename} key={attachment.id}>{text.activity.viewAttachment}</a>)}{transaction.status !== "posted" && transaction.attachments.length === 0 && "—"}</div></td>
+                  <td data-label={text.activity.date}>{date.format(new Date(`${transaction.transactionDate}T00:00:00`))}</td>
+                  <td data-label={text.activity.type}><span className={`transaction-type ${transaction.transactionType}`}>{transaction.transactionType === "income" ? text.activity.incomeType : text.activity.expenseType}</span></td>
+                  <td data-label={text.activity.status}><span className={`transaction-status ${transaction.status}`}>{transaction.status === "posted" ? text.activity.posted : text.activity.voided}</span></td>
+                  <td data-label={text.activity.description}><strong>{transaction.description}</strong><span className="reference">{text.activity.ref} {transaction.id.slice(0, 8).toUpperCase()}{transaction.paymentReference ? ` · ${text.activity.paymentRef}: ${transaction.paymentReference}` : ""}</span>{transaction.status === "reversed" && <span className="void-details">{text.activity.voidReason}: {transaction.voidReason}<br />{transaction.voidedAt ? `${text.activity.voidedOn}: ${dateTime.format(new Date(transaction.voidedAt))}` : ""}</span>}</td>
+                  <td data-label={text.activity.category}>{getCategoryLabel(locale, transaction.category)}</td>
+                  <td data-label={text.activity.fund}>{getFundLabel(locale, transaction.fund)}</td>
+                  <td data-label={text.activity.account}>{getAccountLabel(locale, transaction.account)}</td>
+                  <td data-label={text.activity.amount} className={`amount ${transaction.transactionType === "income" ? "positive" : "negative"}`}>{transaction.transactionType === "income" ? "+" : "−"}{currency.format(transaction.amount)}</td>
+                  <td data-label={text.activity.actions}><div className="activity-actions">{transaction.status === "posted" && membership?.canRecordTransactions && <Link className="table-action" href={`/transactions/${transaction.id}/edit`}>{text.activity.edit}</Link>}{transaction.attachments.map((attachment) => <a className="table-action" href={`/api/transactions/${transaction.id}/attachments/${attachment.id}`} target="_blank" rel="noreferrer" title={attachment.filename} key={attachment.id}>{text.activity.viewAttachment}</a>)}{transaction.status !== "posted" && transaction.attachments.length === 0 && "—"}</div></td>
                 </tr>
               ))}
             </tbody>

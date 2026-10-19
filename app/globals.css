@@ -268,6 +268,16 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
   .activity-filters { align-items: stretch; flex-direction: column; }
   .activity-filters .field:first-child { max-width: none; }
   .activity-filters .table-action { margin-bottom: 0; }
+  .activity-table-wrap { overflow: visible; border: 0; border-radius: 0; }
+  .activity-register { display: block; min-width: 0; }
+  .activity-register thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .activity-register tbody { display: grid; gap: 14px; }
+  .activity-register tr { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .activity-register td { display: grid; grid-template-columns: minmax(86px, 34%) minmax(0, 1fr); gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+  .activity-register td:last-child { border-bottom: 0; }
+  .activity-register td::before { content: attr(data-label); color: var(--muted); font-size: 11px; font-weight: 650; }
+  .activity-register .amount { text-align: left; }
+  .activity-register .activity-actions { min-width: 0; }
   .report-export-panel, .report-export-form { grid-template-columns: 1fr; }
   .edit-transaction-type { align-items: flex-start; flex-direction: column; }
   .settings-summary { align-items: flex-start; flex-direction: column; }
