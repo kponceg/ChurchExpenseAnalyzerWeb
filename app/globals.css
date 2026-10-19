@@ -109,7 +109,7 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .budget-grid { display: grid; gap: 14px; margin-top: 26px; }
 .budget-card { display: grid; grid-template-columns: minmax(180px, .8fr) minmax(0, 1.4fr); gap: 24px; align-items: center; padding: 20px; border: 1px solid var(--line); border-radius: 12px; }
 .budget-card h2 { margin: 6px 0 0; font-size: 18px; }
-.budget-card small { color: var(--muted); text-transform: capitalize; }
+.budget-card small { color: var(--muted); }
 .budget-card dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0; }
 .budget-card dt { color: var(--muted); font-size: 11px; }
 .budget-card dd { margin: 5px 0 0; font-weight: 700; }
