@@ -168,7 +168,7 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
 .voided-row .amount { text-decoration: line-through; }
 .void-details { display: block; margin-top: 7px; color: var(--danger); font-size: 11px; line-height: 1.45; }
 .report-table { min-width: 620px; }
-.report-table .month-name { text-transform: capitalize; font-weight: 650; }
+.report-table .month-name { font-weight: 650; }
 .report-total td { border-top: 2px solid var(--ink); background: var(--surface-muted); font-weight: 750; }
 .report-detail-link { display: block; text-decoration: underline; text-underline-offset: 3px; }
 .report-detail-eyebrow { margin-top: 28px; }
@@ -288,6 +288,17 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
   .reconciliation-register td::before { content: attr(data-label); color: var(--muted); font-size: 11px; font-weight: 650; }
   .reconciliation-register .amount { text-align: left; }
   .reconciliation-register input[type="checkbox"] { width: 24px; height: 24px; }
+  .report-table-wrap, .report-detail-table-wrap { overflow: visible; border: 0; border-radius: 0; }
+  .report-register, .report-detail-register { display: block; min-width: 0; }
+  .report-register thead, .report-detail-register thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .report-register tbody, .report-detail-register tbody { display: grid; gap: 14px; }
+  .report-register tr, .report-detail-register tr { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .report-register td, .report-detail-register td { display: grid; grid-template-columns: minmax(86px, 34%) minmax(0, 1fr); gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+  .report-register td:last-child, .report-detail-register td:last-child { border-bottom: 0; }
+  .report-register td::before, .report-detail-register td::before { content: attr(data-label); color: var(--muted); font-size: 11px; font-weight: 650; }
+  .report-register .amount, .report-detail-register .amount { text-align: left; }
+  .report-register .report-detail-link { display: inline; }
+  .report-register .report-total { border-width: 2px; }
   .report-export-panel, .report-export-form { grid-template-columns: 1fr; }
   .edit-transaction-type { align-items: flex-start; flex-direction: column; }
   .settings-summary { align-items: flex-start; flex-direction: column; }

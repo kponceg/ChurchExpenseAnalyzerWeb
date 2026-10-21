@@ -39,12 +39,12 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
         <button className="primary" type="submit">{text.downloadDetailedPdf}</button>
       </form>
     </section>
-    <div className="table-wrap">
-      <table className="activity-table report-table">
+    <div className="table-wrap report-table-wrap">
+      <table className="activity-table report-table report-register">
         <thead><tr><th scope="col">{text.month}</th><th scope="col">{text.income}</th><th scope="col">{text.expenses}</th><th scope="col">{text.net}</th></tr></thead>
         <tbody>
-          {result.report.months.map((month) => <tr key={month.key}><td className="month-name">{month.label}</td><td className="amount positive"><Link className="report-detail-link" href={`/reports/${month.key}?type=income`}>+{month.income}</Link></td><td className="amount negative"><Link className="report-detail-link" href={`/reports/${month.key}?type=expense`}>−{month.expenses}</Link></td><td className={`amount ${month.netDirection}`}>{month.net}</td></tr>)}
-          <tr className="report-total"><td>{text.total}</td><td className="amount positive">+{result.report.totalIncome}</td><td className="amount negative">−{result.report.totalExpenses}</td><td className={`amount ${result.report.netDirection}`}>{result.report.net}</td></tr>
+          {result.report.months.map((month) => <tr key={month.key}><td data-label={text.month} className="month-name">{month.label}</td><td data-label={text.income} className="amount positive"><Link className="report-detail-link" href={`/reports/${month.key}?type=income`}>+{month.income}</Link></td><td data-label={text.expenses} className="amount negative"><Link className="report-detail-link" href={`/reports/${month.key}?type=expense`}>−{month.expenses}</Link></td><td data-label={text.net} className={`amount ${month.netDirection}`}>{month.net}</td></tr>)}
+          <tr className="report-total"><td data-label={text.month}>{text.total}</td><td data-label={text.income} className="amount positive">+{result.report.totalIncome}</td><td data-label={text.expenses} className="amount negative">−{result.report.totalExpenses}</td><td data-label={text.net} className={`amount ${result.report.netDirection}`}>{result.report.net}</td></tr>
         </tbody>
       </table>
     </div>
