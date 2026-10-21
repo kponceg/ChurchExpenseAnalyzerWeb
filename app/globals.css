@@ -299,6 +299,18 @@ h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.045em; }
   .report-register .amount, .report-detail-register .amount { text-align: left; }
   .report-register .report-detail-link { display: inline; }
   .report-register .report-total { border-width: 2px; }
+  .approval-table-wrap { overflow: visible; border: 0; border-radius: 0; }
+  .approval-register { display: block; min-width: 0; }
+  .approval-register thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .approval-register tbody { display: grid; gap: 14px; }
+  .approval-register tr { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .approval-register td { display: grid; grid-template-columns: minmax(86px, 34%) minmax(0, 1fr); gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+  .approval-register td:last-child { grid-template-columns: 1fr; border-bottom: 0; }
+  .approval-register td::before { content: attr(data-label); color: var(--muted); font-size: 11px; font-weight: 650; }
+  .approval-register .amount { text-align: left; }
+  .approval-register .approval-actions, .approval-register .approval-reject-form { min-width: 0; }
+  .approval-register .approval-actions button { flex: 1; }
+  .approval-register .approval-reject-form textarea { width: 100%; }
   .report-export-panel, .report-export-form { grid-template-columns: 1fr; }
   .edit-transaction-type { align-items: flex-start; flex-direction: column; }
   .settings-summary { align-items: flex-start; flex-direction: column; }
