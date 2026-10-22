@@ -37,8 +37,8 @@ export default async function AuditPage() {
           <p>{text.audit.emptyText}</p>
         </section>
       ) : (
-        <div className="table-wrap">
-          <table className="activity-table audit-table">
+        <div className="table-wrap audit-table-wrap">
+          <table className="activity-table audit-table audit-register">
             <thead>
               <tr>
                 <th scope="col">{text.audit.date}</th>
@@ -50,10 +50,10 @@ export default async function AuditPage() {
             <tbody>
               {result.events.map((event) => (
                 <tr key={event.id}>
-                  <td><time dateTime={event.createdAt}>{dateTime.format(new Date(event.createdAt))}</time></td>
-                  <td>{event.actorEmail ?? text.audit.system}</td>
-                  <td><strong>{event.description}</strong></td>
-                  <td>
+                  <td data-label={text.audit.date}><time dateTime={event.createdAt}>{dateTime.format(new Date(event.createdAt))}</time></td>
+                  <td data-label={text.audit.person}>{event.actorEmail ?? text.audit.system}</td>
+                  <td data-label={text.audit.activity}><strong>{event.description}</strong></td>
+                  <td data-label={text.audit.details}>
                     {event.subject && <span>{event.subject}</span>}
                     <span className="reference">
                       {recordLabels[event.recordType] ?? text.audit.record} · {text.audit.reference} {event.recordId.slice(0, 8).toUpperCase()}
